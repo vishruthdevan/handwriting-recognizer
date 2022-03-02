@@ -36,3 +36,18 @@ for c in cnts:
         thresh = imutils.resize(thresh, width=32)
     else:
         thresh = imutils.resize(thresh, height=32)
+
+    dX = int(max(0, 32 - tW) / 2.0)
+    dY = int(max(0, 32 - tH) / 2.0)
+    # pad the image and force 32x32 dimensions
+    padded = cv2.copyMakeBorder(thresh, top=dY, bottom=dY,
+                                left=dX, right=dX, borderType=cv2.BORDER_CONSTANT,
+                                value=(0, 0, 0))
+    padded = cv2.resize(padded, (32, 32))
+
+    cv2.imwrite(f"results/{str(i)}.png", padded)
+    i += 1
+
+    padded = padded.astype("float32") / 255.0
+    padded = np.expand_dims(padded, axis=-1)
+    chars.append((padded, (x, y, w, h)))
