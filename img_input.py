@@ -1,7 +1,5 @@
-from cv2 import sort
 import numpy as np
 import imutils
-from imutils import grab_contours
 import cv2
 
 
@@ -30,10 +28,11 @@ def sort_contours(cnts):
     final = []
     print(len(sorted_cnts))
     for i in sorted_cnts:
-        for j in i:
+        s = sorted(i, key=lambda x: x[1][0])
+        for j in s:
             print(j[1])
         print("\n\n")
-        for j in i:
+        for j in s:
             final.append(j)
     return final
 
@@ -41,25 +40,27 @@ def sort_contours(cnts):
 # image_file = input("Enter path to image: ")
 image_file = "images/img3.jpg"
 image = cv2.imread(image_file)
-
 greyed = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
 blurred = cv2.GaussianBlur(greyed, (5, 5), 0)
-
 edges = cv2.Canny(blurred, 30, 150)
-
 cv2.imshow("Edges detected: ", edges)
+
 
 cnts, _ = cv2.findContours(edges.copy(), cv2.RETR_EXTERNAL,
                            cv2.CHAIN_APPROX_SIMPLE)
 cnts = sort_contours(cnts)
 
+
 chars = []
 i = 0
-
+_, _, avg_h, avg_w = cv2.boundingRect(cnts[0][0])
 for c in cnts:
     (x, y, w, h) = cv2.boundingRect(c[0])
-    if True:  # (w >= 5 and w <= 150) and (h >= 15 and h <= 120):
+
+    if (w >= avg_w - 60 and w <= avg_w + 60) and (h >= avg_h - 60 and h <= avg_h + 60):
+        avg_w = (avg_w + w) / 2
+        avg_h = (avg_h + h) / 2
+
         roi = greyed[y:y + h, x:x + w]
         thresh = cv2.threshold(roi, 0, 255,
                                cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
@@ -72,7 +73,7 @@ for c in cnts:
 
         dX = int(max(0, 32 - tW) / 2.0)
         dY = int(max(0, 32 - tH) / 2.0)
-        # pad the image and force 32x32 dimensions
+
         padded = cv2.copyMakeBorder(thresh, top=dY, bottom=dY,
                                     left=dX, right=dX, borderType=cv2.BORDER_CONSTANT,
                                     value=(0, 0, 0))
