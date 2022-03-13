@@ -11,16 +11,15 @@ import matplotlib.pyplot as plt
 import cv2
 import numpy as np
 from keras.models import Sequential
-from keras.layers import Dense, Flatten, Conv2D, MaxPool2D, Dropout
-from keras.optimizers import SGD, Adam
-from keras.callbacks import ReduceLROnPlateau, EarlyStopping
-from keras.utils import to_categorical
+from keras.layers import Dense, Flatten, Conv2D, MaxPool2D
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.utils import to_categorical
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 
-data = pd.read_csv(r"<Dataset file name>").astype('float32')
+data = pd.read_csv(r"data.csv").astype('float32')
 
 X = data.drop('0',axis = 1)
 y = data['0']
@@ -75,6 +74,7 @@ model.add(Dense(64,activation ="relu"))
 model.add(Dense(128,activation ="relu"))
 model.add(Dense(26,activation ="softmax"))
 
+
 model.compile(optimizer = Adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
 history = model.fit(train_X, train_yOHE, epochs=1,  validation_data = (test_X,test_yOHE))
 
@@ -86,65 +86,7 @@ print("The training accuracy is :", history.history['accuracy'])
 print("The validation loss is :", history.history['val_loss'])
 print("The training loss is :", history.history['loss'])
 
-fig, axes = plt.subplots(3,3, figsize=(8,9))
-axes = axes.flatten()
 
-for i,ax in enumerate(axes):
-    img = np.reshape(test_X[i], (28,28))
-    ax.imshow(img, cmap="Greys")
-    
-    pred = word_dict[np.argmax(test_yOHE[i])]
-    ax.set_title("Prediction: "+pred)
-    ax.grid()
-
-img_copy = cv2.GaussianBlur(img_copy, (7,7), 0)
-img_gray = cv2.cvtColor(img_copy, cv2.COLOR_BGR2GRAY)
-_, img_thresh = cv2.threshold(img_gray, 100, 255, cv2.THRESH_BINARY_INV)
-
-img_final = cv2.resize(img_thresh, (28,28))
-img_final =np.reshape(img_final, (1,28,28,1))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+score = model.evaluate(test_X, test_y)
+print("Test loss:", score[0])
+print("Test accuracy:", score[1])

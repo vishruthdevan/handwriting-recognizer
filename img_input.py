@@ -1,6 +1,7 @@
 import numpy as np
 import imutils
 import cv2
+import tensorflow as tf
 
 
 def sort_contours(cnts):
@@ -38,7 +39,7 @@ def sort_contours(cnts):
 
 
 # image_file = input("Enter path to image: ")
-image_file = "images/img3.jpg"
+image_file = "images/img2.jpg"
 image = cv2.imread(image_file)
 greyed = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 blurred = cv2.GaussianBlur(greyed, (5, 5), 0)
@@ -77,11 +78,8 @@ for c in cnts:
         padded = cv2.copyMakeBorder(thresh, top=dY, bottom=dY,
                                     left=dX, right=dX, borderType=cv2.BORDER_CONSTANT,
                                     value=(0, 0, 0))
-        padded = cv2.resize(padded, (32, 32))
+        padded = cv2.resize(padded, (28,28))
+        # padded=np.expand_dims(padded,axis=-1)
 
-        cv2.imwrite(f"results/{str(i)}.png", padded)
-        i += 1
-
-        padded = padded.astype("float32") / 255.0
         padded = np.expand_dims(padded, axis=-1)
-        chars.append((padded, (x, y, w, h)))
+        cv2.imwrite(f"results/{str(i)}.png", padded)
