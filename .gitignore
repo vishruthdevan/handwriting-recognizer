@@ -1,3 +1,4 @@
 results/
 data.csv
 model_hand.h5
+__pycache__/
