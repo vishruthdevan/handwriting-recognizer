@@ -30,9 +30,9 @@ def sort_contours(cnts):
     print(len(sorted_cnts))
     for i in sorted_cnts:
         s = sorted(i, key=lambda x: x[1][0])
-        for j in s:
-            print(j[1])
-        print("\n\n")
+        # for j in s:
+            # print(j[1])
+        # print("\n\n")
         for j in s:
             final.append(j)
     return final
@@ -70,14 +70,15 @@ def find_letters(edges, greyed, blurred):
             thresh = cv2.threshold(roi, 0, 255,
                                 cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
             (tH, tW) = thresh.shape
+            print(tH, tW)
 
             if tW > tH:
                 thresh = imutils.resize(thresh, width=28)
             else:
                 thresh = imutils.resize(thresh, height=28)
 
-            dX = int(max(0, 32 - tW) / 2.0)
-            dY = int(max(0, 32 - tH) / 2.0)
+            dX = 4
+            dY = 4
 
             padded = cv2.copyMakeBorder(thresh, top=dY, bottom=dY,
                                         left=dX, right=dX, borderType=cv2.BORDER_CONSTANT,
@@ -97,3 +98,10 @@ def main():
     # for i in final:
     #     print(np.array([i[:5, :5, 0]]))
     return final
+
+
+if __name__ == "__main__":
+    final = main()
+    for i in range(len(final)):
+        cv2.imshow(f'{i}', final[i])
+        cv2.waitKey(0)
