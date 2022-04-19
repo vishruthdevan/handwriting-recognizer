@@ -27,11 +27,11 @@ def sort_contours(cnts):
             sorted_cnts.append([(c, b)])
 
     final = []
-    print(len(sorted_cnts))
+    # print(len(sorted_cnts))
     for i in sorted_cnts:
         s = sorted(i, key=lambda x: x[1][0])
         # for j in s:
-            # print(j[1])
+        # print(j[1])
         # print("\n\n")
         for j in s:
             final.append(j)
@@ -39,10 +39,11 @@ def sort_contours(cnts):
 
 
 def get_file():
-    # image_file = input("Enter path to image: ")
-    image_file = "images/img2.jpg"
+    image_file = input("Enter path to image: ")
+    # image_file = "images/img2.jpg"
     image = cv2.imread(image_file)
     return image
+
 
 def process_image(image):
     greyed = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -53,12 +54,12 @@ def process_image(image):
 
 def find_letters(edges, greyed, blurred):
     cnts, _ = cv2.findContours(edges.copy(), cv2.RETR_EXTERNAL,
-                            cv2.CHAIN_APPROX_SIMPLE)
+                               cv2.CHAIN_APPROX_SIMPLE)
     cnts = sort_contours(cnts)
     final = []
     i = 0
     _, _, avg_h, avg_w = cv2.boundingRect(cnts[0][0])
-    
+
     for c in cnts:
         (x, y, w, h) = cv2.boundingRect(c[0])
 
@@ -68,9 +69,9 @@ def find_letters(edges, greyed, blurred):
 
             roi = greyed[y:y + h, x:x + w]
             thresh = cv2.threshold(roi, 0, 255,
-                                cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
+                                   cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
             (tH, tW) = thresh.shape
-            print(tH, tW)
+            # print(tH, tW)
 
             if tW > tH:
                 thresh = imutils.resize(thresh, width=28)
@@ -83,12 +84,12 @@ def find_letters(edges, greyed, blurred):
             padded = cv2.copyMakeBorder(thresh, top=dY, bottom=dY,
                                         left=dX, right=dX, borderType=cv2.BORDER_CONSTANT,
                                         value=(0, 0, 0))
-            padded = cv2.resize(padded, (28,28))
+            padded = cv2.resize(padded, (28, 28))
             padded = np.expand_dims(padded, axis=-1)
             final.append(padded)
 
     return final
-            # cv2.imwrite(f"results/{str(i)}.png", padded)
+    # cv2.imwrite(f"results/{str(i)}.png", padded)
 
 
 def main():
