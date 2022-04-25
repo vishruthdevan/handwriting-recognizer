@@ -1,0 +1,8 @@
+README.md
+setup.py
+recog.egg-info/PKG-INFO
+recog.egg-info/SOURCES.txt
+recog.egg-info/dependency_links.txt
+recog.egg-info/entry_points.txt
+recog.egg-info/requires.txt
+recog.egg-info/top_level.txt
