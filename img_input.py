@@ -1,3 +1,4 @@
+from cv2 import sort
 import numpy as np
 import imutils
 import cv2
@@ -21,12 +22,13 @@ def sort_contours(cnts):
             if b[1] < sorted_cnts[i][0][1][1] + sorted_cnts[i][0][1][3]:
                 sorted_cnts[i].append((c, b))
                 appended = True
-                break
-
+                break            
         if not appended:
             sorted_cnts.append([(c, b)])
 
     final = []
+    lines = []
+    line = 0
     # print(len(sorted_cnts))
     for i in sorted_cnts:
         s = sorted(i, key=lambda x: x[1][0])
@@ -34,8 +36,10 @@ def sort_contours(cnts):
         # print(j[1])
         # print("\n\n")
         for j in s:
+            lines.append(line)
             final.append(j)
-    return final
+        line += 1
+    return final, lines
 
 
 def get_file():
@@ -55,7 +59,7 @@ def process_image(image):
 def find_letters(edges, greyed, blurred):
     cnts, _ = cv2.findContours(edges.copy(), cv2.RETR_EXTERNAL,
                                cv2.CHAIN_APPROX_SIMPLE)
-    cnts = sort_contours(cnts)
+    cnts, lines = sort_contours(cnts)
     final = []
     i = 0
     _, _, avg_h, avg_w = cv2.boundingRect(cnts[0][0])
@@ -88,17 +92,17 @@ def find_letters(edges, greyed, blurred):
             padded = np.expand_dims(padded, axis=-1)
             final.append(padded)
 
-    return final
+    return final, lines
     # cv2.imwrite(f"results/{str(i)}.png", padded)
 
 
 def main():
     image = get_file()
     edges, greyed, blurred = process_image(image)
-    final = find_letters(edges, greyed, blurred)
+    final, lines = find_letters(edges, greyed, blurred)
     # for i in final:
     #     print(np.array([i[:5, :5, 0]]))
-    return final
+    return final, lines
 
 
 if __name__ == "__main__":
