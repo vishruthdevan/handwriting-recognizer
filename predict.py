@@ -29,3 +29,6 @@ for i in sentence:
 print(sentence)
 print('Final Output: ', final_output)
 
+s = gTTS(text=final_output, lang='en', slow=False)
+s.save("hand_reg_text.mp3")
+os.system("start hand_reg_text.mp3")
