@@ -22,7 +22,7 @@ def sort_contours(cnts):
             if b[1] < sorted_cnts[i][0][1][1] + sorted_cnts[i][0][1][3]:
                 sorted_cnts[i].append((c, b))
                 appended = True
-                break            
+                break
         if not appended:
             sorted_cnts.append([(c, b)])
 
